@@ -1,0 +1,27 @@
+name: build-all-ipk
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 构建全部插件
+        run: python3 build.py plugins output
+
+      - name: 查看产物
+        run: ls -la output/ipk/ && du -sh output/ipk/
+
+      - name: 发布到 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ipk-build-${{ github.run_number }}
+          name: 爱快插件全量包 (构建 #${{ github.run_number }})
+          body: |
+            由 iKuaiPatch/plugins 全量构建的离线安装包（.ipk）。
+            安装方法：爱快后台 → 插件管理 → 离线安装 → 上传对应架构的 ipk。
+            x86_64 用于常规 x86 软路由，arm64 用于 ARM 架构设备。
+          files: output/ipk/*.ipk
