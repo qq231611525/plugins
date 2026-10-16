@@ -3,6 +3,9 @@ name: build-all-ipk
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +16,7 @@ jobs:
         run: python3 build.py plugins output
 
       - name: 查看产物
-        run: ls -la output/ipk/ && du -sh output/ipk/
+        run: ls output/ipk/ | head -50 && du -sh output/ipk/
 
       - name: 发布到 Release
         uses: softprops/action-gh-release@v2
